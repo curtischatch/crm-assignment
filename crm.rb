@@ -1,15 +1,124 @@
+# #my previous code with bugs******
+
+
+# require_relative 'contact'
+
+# class CRM
+
+#   def initialize
+
+#   end
+
+#   def main_menu
+#     while true # repeat indefinitely
+#       print_main_menu
+#       user_selected = gets.to_i #stores a number
+#       call_option(user_selected)
+#     end
+#   end
+
+#   def print_main_menu
+#     puts '[1] Add a new contact'
+#     puts '[2] Modify an existing contact'
+#     puts '[3] Delete a contact'
+#     puts '[4] Display all the contacts'
+#     puts '[5] Search by attribute'
+#     puts '[6] Exit'
+#     puts 'Enter a number: '
+#   end
+
+#   def call_option(user_selected)
+#     case user_selected
+#     when 1 then add_new_contact
+#     when 2 then modify_existing_contact
+#     when 3 then delete_contact
+#     when 4 then display_all_contacts
+#     when 5 then search_by_attribute
+#     when 6 then exit
+#     end
+#   end
+
+#   def add_new_contact
+#     print 'Enter First Name: '
+#     first_name = gets.chomp
+
+#     print 'Enter Last Name: '
+#     last_name = gets.chomp
+
+#     print 'Enter Email Address: '
+#     email = gets.chomp
+
+#     Contact.create(first_name, last_name, email, note)
+#   end
+
+#   def modify_existing_contact
+#     print "Enter ID: "
+#     id = gets.chomp.to_i
+#     p Contact.find(id)
+
+#     print 'What part of contact requires update?'
+#     attribute = gets.chomp.downcase
+
+#     print "Please enter new information"
+#     new_info = gets.chomp.downcase
+
+#     puts "\e[H\e[2J"
+
+#     p attribute + new_info
+
+
+#   end
+
+#   def delete_contact
+#     print "Enter the first name of which you'd like to delete"
+#     name = gets.chomp.downcase
+#     contact = Contact.find_by('first_name' => name)
+#     contact.delete
+
+#     puts "\e[H\e[2J"
+
+#   end
+
+#   def display_all_contacts
+#     puts "\e[H\e[2j"
+#     p Contact.all
+#   end
+
+#   def search_by_attribute
+#     print "Enter the attribute that you would like to search by:"
+#     attribute = gets.chomp.downcase
+
+#     print "Enter the value of the selected attribute:"
+#     value = gets.chomp.downcase
+
+#     contact = Contact.find_by(attribute => value)
+#     puts "\e[H\e[2J"
+#     p contact
+#   end
+# end
+
+# crm1 = CRM.new('this is my first crm')
+# crm1.main_menu
+
+# at_exit do
+#   ActiveRecord::Base.connection.close
+# end
+
+
+# working code********************************
+
 require_relative 'contact'
 
 class CRM
 
-  def initialize
-
+  def initialize(name)
+    @name = name
   end
 
   def main_menu
-    while true # repeat indefinitely
+    while true
       print_main_menu
-      user_selected = gets.to_i #stores a number
+      user_selected = gets.to_i
       call_option(user_selected)
     end
   end
@@ -36,49 +145,79 @@ class CRM
   end
 
   def add_new_contact
-    print 'Enter First Name: '
-    first_name = gets.chomp
+    print 'Enter the first name: '
+    first_name = gets.chomp.downcase
 
-    print 'Enter Last Name: '
-    last_name = gets.chomp
+    print 'Enter the last name: '
+    last_name = gets.chomp.downcase
 
-    print 'Enter Email Address: '
-    email = gets.chomp
+    print 'Enter email address: '
+    email = gets.chomp.downcase
 
-    Contact.create(first_name, last_name, email, note)
+    print 'Enter a note: '
+    note = gets.chomp.downcase
+
+    contact = Contact.create(
+      first_name: first_name,
+      last_name:  last_name,
+      email:      email,
+      note:       note
+    )
+
+    contact.save
+    puts "\e[H\e[2J"
   end
 
   def modify_existing_contact
-    print "Enter ID: "
-    id = gets.chomp.to_i
-    p Contact.find(id)
+    print 'Enter the first name of the contact you would like to update: '
+    name = gets.chomp.downcase
 
-    print 'What part of contact requires update?'
+    print 'Please enter what you would like to change: '
     attribute = gets.chomp.downcase
 
-    print "Please enter new information"
-    new_info = gets.chomp.downcase
+    print 'Please enter the new value: '
+    value = gets.chomp.downcase
+
+    contact = Contact.find_by('first_name' => name)
+    contact.update(attribute => value)
 
     puts "\e[H\e[2J"
 
-    p attribute + new_info
-
-
+    p contact
   end
 
   def delete_contact
-    print "Enter the first name of which you'd like to delete"
+    print "Please enter the first name of the contact you would like to delete: "
     name = gets.chomp.downcase
+    contact = Contact.find_by('first_name' => name)
+    contact.delete
+
+    puts "\e[H\e[2J"
 
   end
 
   def display_all_contacts
-
+    puts "\e[H\e[2J"
+    p Contact.all
   end
 
   def search_by_attribute
+    print "Enter the attribute that you would like to search by: "
+    attribute = gets.chomp.downcase
 
+    print "Enter the value of the selected attribute: "
+    value = gets.chomp.downcase
+
+    contact = Contact.find_by(attribute => value)
+    puts "\e[H\e[2J"
+    p contact
   end
 
+end
 
+crm1 = CRM.new('this is my first crm')
+crm1.main_menu
+
+at_exit do
+  ActiveRecord::Base.connection.close
 end

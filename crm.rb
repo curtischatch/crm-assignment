@@ -221,3 +221,7 @@ crm1.main_menu
 at_exit do #ensures that it'll close conneciton to database
   ActiveRecord::Base.connection.close
 end
+# 
+# Some hints:
+# Wherever you're updating fields of @contact, you'll need to make sure you save the record to the database. It's no longer enough to simply update a record in our program's memory, we also need to make sure that change is saved back to the database.
+# Try out your code and commit frequently, as often as every time you get one of your ActiveRecord method calls working properly. Lean towards committing too much instead of too little.

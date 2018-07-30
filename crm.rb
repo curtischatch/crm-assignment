@@ -218,6 +218,6 @@ end
 crm1 = CRM.new('this is my first crm')
 crm1.main_menu
 
-at_exit do
+at_exit do #ensures that it'll close conneciton to database
   ActiveRecord::Base.connection.close
 end
